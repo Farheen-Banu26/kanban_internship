@@ -1149,8 +1149,19 @@ const swaggerDefinition = {
 
 const swaggerOptions = {
   definition: swaggerDefinition,
-  apis: [],
+  // Scan route and controller files for JSDoc comments to populate path definitions.
+  // These paths are relative to the project root when swagger-jsdoc runs.
+  apis: ['./src/routes/**/*.js', './src/controllers/**/*.js'],
 };
 
-const swaggerSpec = swaggerJsdoc(swaggerOptions);
+let swaggerSpec;
+try {
+  swaggerSpec = swaggerJsdoc(swaggerOptions);
+} catch (err) {
+  // If swagger generation fails, log a helpful message and rethrow so startup fails fast.
+  // Avoid changing swagger output here; the error should be addressed by fixing JSDoc/docs.
+  console.error('Failed to generate swaggerSpec:', err && err.message ? err.message : err);
+  throw err;
+}
+
 export default swaggerSpec;

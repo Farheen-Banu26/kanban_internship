@@ -14,6 +14,18 @@ import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
+// Explicit GET to ensure some proxies/clients reaching '/api-docs' (without trailing slash)
+// receive the UI HTML directly instead of relying on a redirect.
+app.get('/api-docs', (_req, res) => {
+  try {
+    const html = swaggerUi.generateHTML(swaggerSpec, { explorer: true });
+    res.setHeader('Content-Type', 'text/html');
+    return res.send(html);
+  } catch (err) {
+    return res.status(500).json({ success: false, message: 'Failed to render API docs' });
+  }
+});
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 
 app.use(morgan(env.nodeEnv === 'development' ? 'dev' : 'combined'));

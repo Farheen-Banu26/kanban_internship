@@ -13,6 +13,12 @@ import { notFound } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
+app.get("/test", (req, res) => {
+  res.json({
+    success: true,
+    message: "Latest app.js is running"
+  });
+});
 
 // Explicit GET to ensure some proxies/clients reaching '/api-docs' (without trailing slash)
 // receive the UI HTML directly instead of relying on a redirect.

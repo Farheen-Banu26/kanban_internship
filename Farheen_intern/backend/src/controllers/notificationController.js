@@ -1,12 +1,18 @@
 import Notification from '../models/Notification.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
+import { broadcastUserEvent } from '../utils/socketServer.js';
 
 // Helper to create a notification
-export const createNotification = async (userId, type, message, relatedId = null) => {
+export const createNotification = async (userId, type, message, relatedId = null, emitRealtime = false) => {
   try {
-    await Notification.create({ user: userId, type, message, relatedId });
+    const notification = await Notification.create({ user: userId, type, message, relatedId });
+    if (emitRealtime) {
+      broadcastUserEvent(userId, 'notification', { notification });
+    }
+    return notification;
   } catch (err) {
     console.error('Failed to create notification:', err);
+    return null;
   }
 };
 

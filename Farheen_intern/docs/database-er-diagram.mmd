@@ -1,0 +1,12 @@
+erDiagram
+    USER ||--o{ WORKSPACE : owns
+    WORKSPACE ||--o{ USER : has_members
+    WORKSPACE ||--o{ TASK : contains
+    USER ||--o{ TASK : assigned_to
+    USER ||--o{ TASK : created
+    WORKSPACE ||--o{ INVITATION : issues
+    USER ||--o{ INVITATION : invited_by
+    USER ||--o{ NOTIFICATION : receives
+    WORKSPACE ||--o{ ACTIVITY : logs
+    USER ||--o{ ACTIVITY : performs
+    TASK ||--o{ ACTIVITY : related_to

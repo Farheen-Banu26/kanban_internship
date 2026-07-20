@@ -1,14 +1,17 @@
 import fs from 'fs';
 import path from 'path';
+import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
 import Task, { TASK_STATUSES, TASK_PRIORITIES } from '../models/Task.js';
 import Activity from '../models/Activity.js';
+import User from '../models/User.js';
 import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { findWorkspaceById, isUserMember } from '../services/workspaceService.js';
 import { canCreateTask, canManageTask, getWorkspaceRole } from '../utils/rbac.js';
 import { broadcastCommentEvent } from '../utils/commentRealtime.js';
 import { broadcastWorkspaceEvent } from '../utils/socketServer.js';
+import { createNotification } from './notificationController.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,11 +52,19 @@ const populateOptions = [
   { path: 'createdBy', select: userFields },
   { path: 'workspace', select: workspaceFields },
   { path: 'comments.author', select: userFields },
+  { path: 'attachments.uploadedBy', select: userFields },
 ];
 
 const populateTaskQuery = (query) => query.populate(populateOptions);
 
 const populateTaskDoc = async (task) => task.populate(populateOptions);
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const normalizeMention = (value) => (value || '').trim().toLowerCase().replace(/\s+/g, '');
+const extractMentionsFromText = (text) => {
+  const matches = text.match(/@([\w.-]+)/g) || [];
+  return Array.from(new Set(matches.map((mention) => normalizeMention(mention.slice(1)))));
+};
 
 const createTaskActivity = async ({ userId, workspaceId, taskId, action, title, description }) => {
   if (!userId || !workspaceId || !taskId) return null;
@@ -230,15 +241,17 @@ export const createTaskComment = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Comment text is required');
   }
 
-  const parsedMentions = Array.isArray(mentions)
-    ? mentions.filter((mention) => typeof mention === 'string' && mention.trim()).map((mention) => mention.trim()).slice(0, 10)
+  const textMentions = extractMentionsFromText(trimmedText);
+  const explicitMentions = Array.isArray(mentions)
+    ? mentions.filter((mention) => typeof mention === 'string' && mention.trim()).map(normalizeMention)
     : [];
+  const commentMentions = Array.from(new Set([...textMentions, ...explicitMentions])).slice(0, 10);
 
   const comment = {
-    _id: new Task.db.Types.ObjectId(),
+    _id: new mongoose.Types.ObjectId(),
     text: trimmedText,
     author: req.user._id,
-    mentions: parsedMentions,
+    mentions: commentMentions,
     edited: false,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -248,6 +261,26 @@ export const createTaskComment = asyncHandler(async (req, res) => {
   task.updatedAt = new Date();
   await task.save();
   await populateTaskDoc(task);
+
+  if (commentMentions.length > 0) {
+    const mentionQueries = commentMentions.map((mention) => ({
+      $or: [
+        { name: new RegExp(`^${escapeRegExp(mention)}$`, 'i') },
+        { email: new RegExp(`^${escapeRegExp(mention)}$`, 'i') },
+      ],
+    }));
+
+    const mentionedUsers = await User.find({ $or: mentionQueries }).select('name email');
+    const uniqueMentionedUsers = mentionedUsers.filter((user, index, self) =>
+      self.findIndex((other) => other._id.equals(user._id)) === index
+    );
+
+    for (const mentionedUser of uniqueMentionedUsers) {
+      if (mentionedUser._id.equals(req.user._id)) continue;
+      const message = `${req.user.name} mentioned you in a comment on task '${task.title}'.`;
+      await createNotification(mentionedUser._id, 'task_mentioned', message, task._id, true);
+    }
+  }
 
   await createTaskActivity({
     userId: req.user._id,
@@ -384,7 +417,7 @@ export const uploadTaskAttachment = asyncHandler(async (req, res) => {
   }
 
   const attachment = {
-    _id: new Task.db.Types.ObjectId(),
+    _id: new mongoose.Types.ObjectId(),
     fileName: req.file.filename,
     originalName: req.file.originalname,
     fileType: req.file.mimetype,

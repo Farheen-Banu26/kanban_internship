@@ -47,20 +47,20 @@ function CreateWorkspaceModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:border dark:border-slate-800 dark:bg-slate-900">
-        <h3 className="text-lg font-bold text-surface-900 dark:text-slate-100">Create Workspace</h3>
-        <p className="mt-1 text-sm text-surface-500 dark:text-slate-400">A workspace is where your team collaborates on tasks.</p>
+    <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+    <div className="relative w-full max-w-md rounded-2xl bg-white dark:bg-card-dark dark:border dark:border-border-dark p-6 shadow-2xl">
+        <h3 className="text-lg font-bold text-surface-900 dark:text-heading-dark">Create Workspace</h3>
+        <p className="mt-1 text-sm text-surface-500 dark:text-muted-dark">A workspace is where your team collaborates on tasks.</p>
 
         {error && (
-          <div className="mt-4 rounded-xl bg-red-50 border border-red-200 p-3 text-xs text-red-600">
+          <div className="mt-4 rounded-xl bg-red-50 border border-red-200 p-3 text-xs text-red-600 dark:bg-red-950/40 dark:border-red-900/60 dark:text-red-200">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="mt-5 space-y-4">
           <div className="space-y-1.5">
-            <label htmlFor="workspace-name" className="block text-sm font-medium text-surface-700">
+            <label htmlFor="workspace-name" className="block text-sm font-medium text-surface-700 dark:text-muted-dark">
               Workspace Name <span className="text-red-500">*</span>
             </label>
             <input
@@ -70,12 +70,12 @@ function CreateWorkspaceModal({ isOpen, onClose, onSuccess }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Product Team"
-              className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+              className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none dark:border-border-dark dark:bg-input-dark dark:text-white dark:placeholder-placeholder-dark dark:focus:border-primary-dark"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="workspace-purpose" className="block text-sm font-medium text-surface-700">
+            <label htmlFor="workspace-purpose" className="block text-sm font-medium text-surface-700 dark:text-muted-dark">
               Purpose <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -85,7 +85,7 @@ function CreateWorkspaceModal({ isOpen, onClose, onSuccess }) {
               onChange={(e) => setPurpose(e.target.value)}
               placeholder="What is this workspace for?"
               rows={3}
-              className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none resize-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+              className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none resize-none dark:border-border-dark dark:bg-input-dark dark:text-white dark:placeholder-placeholder-dark dark:focus:border-primary-dark"
             />
           </div>
 
@@ -94,7 +94,7 @@ function CreateWorkspaceModal({ isOpen, onClose, onSuccess }) {
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="flex-1 rounded-xl border border-surface-300 px-4 py-2.5 text-sm font-medium text-surface-700 hover:bg-surface-50 transition-colors disabled:opacity-50"
+              className="flex-1 rounded-xl border border-surface-300 px-4 py-2.5 text-sm font-medium text-surface-700 hover:bg-surface-50 transition-colors disabled:opacity-50 dark:border-border-dark dark:text-white dark:hover:bg-surface-dark"
             >
               Cancel
             </button>
@@ -102,7 +102,7 @@ function CreateWorkspaceModal({ isOpen, onClose, onSuccess }) {
               id="create-workspace-submit-btn"
               type="submit"
               disabled={submitting || !name.trim() || !purpose.trim()}
-              className="flex-1 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/25 transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/25 transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed dark:from-primary-dark dark:to-blue-600"
             >
               {submitting ? 'Creating...' : 'Create'}
             </button>
@@ -142,19 +142,19 @@ function JoinWorkspaceModal({ isOpen, onClose, onSuccess }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:border dark:border-slate-800 dark:bg-slate-900">
-        <h3 className="text-lg font-bold text-surface-900 dark:text-slate-100">Join Workspace</h3>
-        <p className="mt-1 text-sm text-surface-500 dark:text-slate-400">Enter the invite code shared by a workspace member.</p>
+      <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:border dark:border-border-dark dark:bg-card-dark">
+        <h3 className="text-lg font-bold text-surface-900 dark:text-heading-dark">Join Workspace</h3>
+        <p className="mt-1 text-sm text-surface-500 dark:text-muted-dark">Enter the invite code shared by a workspace member.</p>
 
         {error && (
-          <div className="mt-4 rounded-xl bg-red-50 border border-red-200 p-3 text-xs text-red-600">
+          <div className="mt-4 rounded-xl bg-red-50 border border-red-200 p-3 text-xs text-red-600 dark:bg-red-950/40 dark:border-red-900/60 dark:text-red-200">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="mt-5 space-y-4">
           <div className="space-y-1.5">
-            <label htmlFor="invite-code" className="block text-sm font-medium text-surface-700">
+            <label htmlFor="invite-code" className="block text-sm font-medium text-surface-700 dark:text-muted-dark">
               Invite code
             </label>
             <input
@@ -165,7 +165,7 @@ function JoinWorkspaceModal({ isOpen, onClose, onSuccess }) {
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
               placeholder="e.g., ENG2X9KA"
-              className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm font-mono text-surface-800 placeholder:text-surface-400 tracking-widest uppercase transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+              className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm font-mono text-surface-800 placeholder:text-surface-400 tracking-widest uppercase transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none dark:border-border-dark dark:bg-input-dark dark:text-white dark:placeholder-placeholder-dark dark:focus:border-primary-dark"
             />
           </div>
 
@@ -174,7 +174,7 @@ function JoinWorkspaceModal({ isOpen, onClose, onSuccess }) {
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="flex-1 rounded-xl border border-surface-300 px-4 py-2.5 text-sm font-medium text-surface-700 hover:bg-surface-50 transition-colors disabled:opacity-50"
+              className="flex-1 rounded-xl border border-surface-300 px-4 py-2.5 text-sm font-medium text-surface-700 hover:bg-surface-50 transition-colors disabled:opacity-50 dark:border-border-dark dark:text-white dark:hover:bg-surface-dark"
             >
               Cancel
             </button>
@@ -182,7 +182,7 @@ function JoinWorkspaceModal({ isOpen, onClose, onSuccess }) {
               id="join-workspace-submit-btn"
               type="submit"
               disabled={submitting}
-              className="flex-1 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/25 transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/25 transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed dark:from-primary-dark dark:to-blue-600"
             >
               {submitting ? 'Joining...' : 'Join'}
             </button>
@@ -214,7 +214,7 @@ function WorkspaceCard({ ws, index, onNavigate }) {
 
   return (
     <div
-      className="group relative overflow-hidden rounded-2xl border border-surface-200 bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 cursor-pointer dark:border-slate-800 dark:bg-slate-900"
+      className="group relative overflow-hidden rounded-2xl border border-surface-200 bg-white dark:bg-card-dark shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 cursor-pointer dark:border-border-dark dark:hover:shadow-black/30"
       onClick={() => onNavigate(`/board/${ws.id}`)}
     >
       {/* Header gradient */}
@@ -232,46 +232,46 @@ function WorkspaceCard({ ws, index, onNavigate }) {
       <div className="p-5 space-y-3">
         {/* 📁 Name */}
         <div>
-          <h3 className="flex items-center gap-1.5 text-base font-bold text-surface-900 transition-colors group-hover:text-brand-700 dark:text-slate-100">
+          <h3 className="flex items-center gap-1.5 text-base font-bold text-surface-900 transition-colors group-hover:text-brand-700 dark:text-heading-dark dark:group-hover:text-primary-dark">
             <span>📁</span> {ws.name}
           </h3>
         </div>
 
         {/* 📝 Purpose */}
         {ws.purpose && (
-          <p className="flex gap-1.5 text-sm leading-relaxed text-surface-500 line-clamp-2 dark:text-slate-400">
+          <p className="flex gap-1.5 text-sm leading-relaxed text-surface-500 line-clamp-2 dark:text-body-dark">
             <span className="shrink-0">📝</span>
             <span>{ws.purpose}</span>
           </p>
         )}
 
         {/* 📅 Created */}
-        <div className="flex items-center gap-1.5 text-xs text-surface-400">
+        <div className="flex items-center gap-1.5 text-xs text-surface-400 dark:text-muted-dark">
           <span>📅</span>
-          <span>Created: <span className="font-medium text-surface-600 dark:text-slate-300">{formatDate(ws.createdAt)}</span></span>
+          <span>Created: <span className="font-medium text-surface-600 dark:text-body-dark">{formatDate(ws.createdAt)}</span></span>
         </div>
 
         {/* 👥 Members */}
-        <div className="flex items-center gap-1.5 text-xs text-surface-500">
+        <div className="flex items-center gap-1.5 text-xs text-surface-500 dark:text-muted-dark">
           <span>👥</span>
-          <span><span className="font-semibold text-surface-700 dark:text-slate-200">{ws.members?.length || 0}</span> member{ws.members?.length !== 1 ? 's' : ''}</span>
+          <span><span className="font-semibold text-surface-700 dark:text-body-dark">{ws.members?.length || 0}</span> member{ws.members?.length !== 1 ? 's' : ''}</span>
         </div>
 
         {/* 🔑 Invite Code + Copy */}
         <div
-          className="flex items-center justify-between rounded-xl border border-surface-200 bg-surface-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800/70"
+          className="flex items-center justify-between rounded-xl border border-surface-200 bg-surface-50 dark:bg-surface-dark/60 px-3 py-2 dark:border-border-dark"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center gap-2">
             <span className="text-sm">🔑</span>
-            <span className="font-mono text-xs font-bold tracking-wider text-surface-700 dark:text-slate-200">{ws.inviteCode}</span>
+            <span className="font-mono text-xs font-bold tracking-wider text-surface-700 dark:text-body-dark">{ws.inviteCode}</span>
           </div>
           <button
             onClick={handleCopy}
             className={`rounded-lg px-3 py-1 text-xs font-semibold transition-all ${
               copied
-                ? 'bg-emerald-100 text-emerald-700'
-                : 'bg-brand-50 text-brand-700 hover:bg-brand-100'
+                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'
+                : 'bg-brand-50 text-brand-700 hover:bg-brand-100 dark:bg-primary-dark/10 dark:text-blue-300 dark:hover:bg-primary-dark/20'
             }`}
           >
             {copied ? '✓ Copied' : 'Copy'}
@@ -291,7 +291,7 @@ function WorkspaceCard({ ws, index, onNavigate }) {
               </div>
             ))}
             {ws.members?.length > 4 && (
-              <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-surface-100 text-xs font-semibold text-surface-600">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-surface-100 text-xs font-semibold text-surface-600 dark:bg-card-dark dark:text-muted-dark">
                 +{ws.members.length - 4}
               </div>
             )}
@@ -302,7 +302,7 @@ function WorkspaceCard({ ws, index, onNavigate }) {
                 e.stopPropagation();
                 window.location.href = `/settings?workspaceId=${ws.id}`;
               }}
-              className="flex items-center gap-1 text-xs text-surface-400 transition-colors hover:text-surface-700 dark:text-slate-400 dark:hover:text-slate-200"
+              className="flex items-center gap-1 text-xs text-surface-400 transition-colors hover:text-surface-700 dark:text-muted-dark dark:hover:text-heading-dark"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               Settings
@@ -344,21 +344,21 @@ export default function WorkspaceList() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-surface-900 dark:text-slate-100">Workspaces</h1>
-          <p className="mt-1 text-surface-500 dark:text-slate-400">Manage and switch between your team workspaces</p>
+          <h1 className="text-2xl font-extrabold text-surface-900 dark:text-heading-dark">Workspaces</h1>
+          <p className="mt-1 text-surface-500 dark:text-muted-dark">Manage and switch between your team workspaces</p>
         </div>
         <div className="flex gap-3">
           <button
             id="join-workspace-btn"
             onClick={() => setShowJoin(true)}
-            className="rounded-xl border border-surface-300 px-4 py-2.5 text-sm font-medium text-surface-700 transition-all hover:bg-surface-50 hover:border-surface-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+            className="rounded-xl border border-surface-300 px-4 py-2.5 text-sm font-medium text-surface-700 transition-all hover:bg-surface-50 hover:border-surface-400 dark:border-border-dark dark:bg-card-dark dark:text-white dark:hover:bg-surface-dark"
           >
             Join Workspace
           </button>
           <button
             id="create-workspace-btn"
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/25 transition-all hover:shadow-xl hover:-translate-y-0.5"
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-500/25 transition-all hover:shadow-xl hover:-translate-y-0.5 dark:from-primary-dark dark:to-blue-600"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
             New Workspace
@@ -377,17 +377,17 @@ export default function WorkspaceList() {
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-200 border-t-brand-600" />
         </div>
       ) : workspaces.length === 0 ? (
-        <div className="rounded-2xl border-2 border-dashed border-surface-200 p-12 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 mb-4">
+        <div className="rounded-2xl border-2 border-dashed border-surface-200 p-12 text-center dark:border-border-dark">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 mb-4 dark:bg-primary-dark/10 dark:text-blue-400">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
           </div>
-          <h3 className="text-lg font-bold text-surface-900 dark:text-slate-100">No workspaces yet</h3>
-          <p className="mt-1 mx-auto max-w-sm text-sm text-surface-500 dark:text-slate-400">Create a new workspace or join an existing one using an invite code to get started.</p>
+          <h3 className="text-lg font-bold text-surface-900 dark:text-heading-dark">No workspaces yet</h3>
+          <p className="mt-1 mx-auto max-w-sm text-sm text-surface-500 dark:text-muted-dark">Create a new workspace or join an existing one using an invite code to get started.</p>
           <div className="mt-6 flex justify-center gap-3">
-            <button onClick={() => setShowJoin(true)} className="rounded-xl border border-surface-300 px-4 py-2 text-sm font-medium text-surface-700 transition-colors hover:bg-surface-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+            <button onClick={() => setShowJoin(true)} className="rounded-xl border border-surface-300 px-4 py-2 text-sm font-medium text-surface-700 transition-colors hover:bg-surface-50 dark:border-border-dark dark:bg-card-dark dark:text-white dark:hover:bg-surface-dark">
               Join Workspace
             </button>
-            <button onClick={() => setShowCreate(true)} className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 shadow-sm">
+            <button onClick={() => setShowCreate(true)} className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 shadow-sm dark:bg-primary-dark dark:hover:bg-blue-600">
               Create Workspace
             </button>
           </div>

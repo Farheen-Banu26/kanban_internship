@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import api from '../services/api';
+import { createSocketClient } from '../services/socket';
 
 const NAV_LINKS = [
   { to: '/dashboard', label: 'Dashboard' },
@@ -36,6 +37,7 @@ const TYPE_ICON = {
   task_assigned: '📋',
   task_completed: '✅',
   task_due_soon: '⏰',
+  task_mentioned: '💬',
 };
 
 export default function Navbar() {
@@ -83,10 +85,50 @@ export default function Navbar() {
     }
   }, []);
 
+  const socketUrl = useMemo(() => {
+    const baseUrl = import.meta.env.VITE_API_URL || '';
+    if (baseUrl && baseUrl !== '/api') {
+      return baseUrl.replace(/\/api\/?$/, '').replace(/\/$/, '') || window.location.origin;
+    }
+    return window.location.origin;
+  }, []);
+  const socketRef = useRef(null);
+
   // Fetch unread count on mount
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const socket = createSocketClient(token, socketUrl);
+    socketRef.current = socket;
+
+    socket.on('connect', () => {
+      // no-op
+    });
+
+    socket.on('disconnect', () => {
+      // no-op
+    });
+
+    socket.on('notification', ({ notification }) => {
+      if (!notification) return;
+      setNotifications((prev) => [notification, ...prev].slice(0, 50));
+      setUnreadCount((prev) => prev + 1);
+    });
+
+    socket.on('connect_error', () => {
+      // ignore connection errors for notifications
+    });
+
+    return () => {
+      socket.disconnect();
+      socketRef.current = null;
+    };
+  }, [socketUrl]);
 
   const handleOpenNotifications = () => {
     setShowProfile(false);
@@ -125,7 +167,7 @@ export default function Navbar() {
   const initials = user?.name ? user.name.charAt(0).toUpperCase() : 'U';
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center border-b border-surface-200 bg-white/80 backdrop-blur-lg px-4 md:px-6 transition-colors duration-300 dark:border-slate-800 dark:bg-slate-950/80">
+    <header className="sticky top-0 z-40 flex h-16 items-center border-b border-surface-200 bg-white/80 backdrop-blur-lg px-4 md:px-6 transition-colors duration-300 dark:border-border-dark dark:bg-surface-dark/80 dark:backdrop-blur-md">
       {/* Logo */}
       <Link to="/dashboard" className="flex items-center gap-2.5 mr-8 group">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 shadow-md shadow-brand-500/25 transition-transform group-hover:scale-105">
@@ -136,7 +178,7 @@ export default function Navbar() {
             <rect x="14" y="14" width="7" height="7" rx="1" />
           </svg>
         </div>
-        <span className="text-lg font-bold bg-gradient-to-r from-brand-600 to-brand-800 bg-clip-text text-transparent hidden sm:block">
+        <span className="text-lg font-bold bg-gradient-to-r from-brand-600 to-brand-800 bg-clip-text text-transparent hidden sm:block dark:bg-none dark:text-heading-dark">
           TaskFlow
         </span>
       </Link>
@@ -150,7 +192,7 @@ export default function Navbar() {
               key={to}
               to={to}
               className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isActive ? 'bg-brand-50 text-brand-700 dark:bg-brand-950/70 dark:text-brand-300' : 'text-surface-500 hover:text-surface-800 hover:bg-surface-100 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100'
+                isActive ? 'bg-brand-50 text-brand-700 dark:bg-card-dark dark:text-white' : 'text-surface-500 hover:text-surface-800 hover:bg-surface-100 dark:text-muted-dark dark:hover:bg-slate-800 dark:hover:text-heading-dark'
               }`}
             >
               {label}
@@ -164,7 +206,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={toggleTheme}
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-surface-500 transition-colors hover:bg-surface-100 hover:text-surface-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-surface-500 transition-colors hover:bg-surface-100 hover:text-surface-700 dark:text-muted-dark dark:hover:bg-slate-800 dark:hover:text-heading-dark"
           aria-label="Toggle color theme"
         >
           {theme === 'dark' ? (
@@ -179,32 +221,32 @@ export default function Navbar() {
           <button
             id="notifications-btn"
             onClick={handleOpenNotifications}
-            className="relative flex h-9 w-9 items-center justify-center rounded-lg text-surface-400 hover:bg-surface-100 hover:text-surface-600 transition-colors"
+            className="relative flex h-9 w-9 items-center justify-center rounded-lg text-surface-400 hover:bg-surface-100 hover:text-surface-600 transition-colors dark:text-muted-dark dark:hover:bg-slate-800/80 dark:hover:text-heading-dark"
             aria-label="Notifications"
           >
             <NotificationIcon />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white ring-2 ring-white">
+              <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white ring-2 ring-white dark:ring-slate-900">
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
             )}
           </button>
 
           {showNotifications && (
-            <div className="absolute right-0 top-11 w-80 rounded-2xl border border-surface-200 bg-white shadow-xl z-50 overflow-hidden">
+            <div className="absolute right-0 top-11 w-80 rounded-2xl border border-surface-200 bg-white shadow-xl z-50 overflow-hidden dark:border-border-dark dark:bg-card-dark dark:shadow-slate-950/60">
               {/* Header */}
-              <div className="flex items-center justify-between px-4 py-3 border-b border-surface-100">
-                <span className="font-semibold text-sm text-surface-900">
-                  Notifications {unreadCount > 0 && <span className="ml-1.5 rounded-full bg-red-100 px-1.5 py-0.5 text-xs font-bold text-red-600">{unreadCount}</span>}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-border-dark">
+                <span className="font-semibold text-sm text-surface-900 dark:text-heading-dark">
+                  Notifications {unreadCount > 0 && <span className="ml-1.5 rounded-full bg-red-100 px-1.5 py-0.5 text-xs font-bold text-red-600 dark:bg-red-950/50 dark:text-red-300">{unreadCount}</span>}
                 </span>
                 <div className="flex gap-2">
                   {unreadCount > 0 && (
-                    <button onClick={handleMarkAllRead} className="text-xs text-brand-600 hover:text-brand-800 font-medium">
+                    <button onClick={handleMarkAllRead} className="text-xs text-brand-600 hover:text-brand-800 dark:text-primary-dark dark:hover:text-blue-400 font-medium">
                       Mark all read
                     </button>
                   )}
                   {notifications.length > 0 && (
-                    <button onClick={handleClearNotifications} className="text-xs text-surface-400 hover:text-red-600 font-medium">
+                    <button onClick={handleClearNotifications} className="text-xs text-surface-400 hover:text-red-600 dark:text-muted-dark dark:hover:text-red-400 font-medium">
                       Clear
                     </button>
                   )}
@@ -218,7 +260,7 @@ export default function Navbar() {
                     <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand-200 border-t-brand-600" />
                   </div>
                 ) : notifications.length === 0 ? (
-                  <div className="py-8 text-center text-sm text-surface-400">
+                  <div className="py-8 text-center text-sm text-surface-400 dark:text-muted-dark">
                     <div className="text-2xl mb-2">🔔</div>
                     No notifications yet
                   </div>
@@ -227,18 +269,18 @@ export default function Navbar() {
                     <div
                       key={n._id}
                       className={`flex gap-3 px-4 py-3 border-b border-surface-50 transition-colors ${
-                        n.isRead ? 'bg-white' : 'bg-brand-50/50'
+                        n.isRead ? 'bg-white dark:bg-card-dark dark:border-border-dark' : 'bg-brand-50/50 dark:bg-surface-dark border-l-4 border-brand-500 dark:border-l-primary-dark'
                       }`}
                     >
                       <span className="text-lg shrink-0 mt-0.5">{TYPE_ICON[n.type] || '🔔'}</span>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm leading-snug ${n.isRead ? 'text-surface-600' : 'text-surface-900 font-medium'}`}>
+                        <p className={`text-sm leading-snug ${n.isRead ? 'text-surface-600 dark:text-muted-dark' : 'text-surface-900 dark:text-heading-dark font-medium'}`}>
                           {n.message}
                         </p>
-                        <p className="mt-0.5 text-xs text-surface-400">{timeAgo(n.createdAt)}</p>
+                        <p className="mt-0.5 text-xs text-surface-400 dark:text-slate-400">{timeAgo(n.createdAt)}</p>
                       </div>
                       {!n.isRead && (
-                        <span className="h-2 w-2 rounded-full bg-brand-500 shrink-0 mt-1.5" />
+                        <span className="h-2 w-2 rounded-full bg-brand-500 dark:bg-primary-dark shrink-0 mt-1.5" />
                       )}
                     </div>
                   ))
@@ -263,16 +305,16 @@ export default function Navbar() {
           </button>
 
           {showProfile && (
-            <div className="absolute right-0 top-11 w-56 rounded-2xl border border-surface-200 bg-white shadow-xl z-50 overflow-hidden">
+            <div className="absolute right-0 top-11 w-56 rounded-2xl border border-surface-200 bg-white shadow-xl z-50 overflow-hidden dark:border-border-dark dark:bg-card-dark dark:shadow-slate-950/60">
               {/* User info */}
-              <div className="px-4 py-3 border-b border-surface-100">
+              <div className="px-4 py-3 border-b border-surface-100 dark:border-border-dark">
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-brand-600 text-white text-sm font-semibold shrink-0">
                     {initials}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-surface-900 truncate">{user?.name}</p>
-                    <p className="text-xs text-surface-400 truncate">{user?.email}</p>
+                    <p className="text-sm font-semibold text-surface-900 dark:text-heading-dark truncate">{user?.name}</p>
+                    <p className="text-xs text-surface-400 dark:text-muted-dark truncate">{user?.email}</p>
                   </div>
                 </div>
               </div>
@@ -282,25 +324,25 @@ export default function Navbar() {
                 <Link
                   to="/profile"
                   onClick={() => setShowProfile(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-50 transition-colors"
+                  className="group flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-50 transition-colors dark:text-heading-dark dark:hover:bg-primary-dark dark:hover:text-white"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-surface-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-surface-400 transition-colors dark:text-slate-400 group-hover:dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                   My Profile
                 </Link>
                 <Link
                   to="/settings"
                   onClick={() => setShowProfile(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-50 transition-colors"
+                  className="group flex items-center gap-3 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-50 transition-colors dark:text-heading-dark dark:hover:bg-primary-dark dark:hover:text-white"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-surface-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-surface-400 transition-colors dark:text-slate-400 group-hover:dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                   Settings
                 </Link>
               </div>
 
-              <div className="border-t border-surface-100 py-1.5">
+              <div className="border-t border-surface-100 dark:border-border-dark py-1.5">
                 <button
                   onClick={handleLogout}
-                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                   Logout

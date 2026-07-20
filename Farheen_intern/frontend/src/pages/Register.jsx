@@ -84,7 +84,7 @@ export default function Register() {
       </div>
 
       {/* ── Right panel — Form ─────────────────────────────── */}
-      <div className="flex flex-1 items-center justify-center bg-white p-6 transition-colors duration-300 dark:bg-slate-950 sm:p-12">
+      <div className="flex flex-1 items-center justify-center bg-white dark:bg-bg-dark p-6 transition-colors duration-300 sm:p-12">
         <div className="w-full max-w-md space-y-8">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2.5 mb-4">
@@ -96,12 +96,12 @@ export default function Register() {
                 <rect x="14" y="14" width="7" height="7" rx="1" />
               </svg>
             </div>
-            <span className="text-lg font-bold text-brand-700">TaskFlow</span>
+            <span className="text-lg font-bold text-brand-700 dark:text-blue-300">TaskFlow</span>
           </div>
 
           <div>
-            <h2 className="text-3xl font-extrabold text-surface-900 dark:text-slate-100">Create your account</h2>
-            <p className="mt-2 text-surface-500 dark:text-slate-400">Get started for free — no credit card required</p>
+            <h2 className="text-3xl font-extrabold text-surface-900 dark:text-heading-dark">Create your account</h2>
+            <p className="mt-2 text-surface-500 dark:text-muted-dark">Get started for free — no credit card required</p>
           </div>
 
           {error && (
@@ -113,7 +113,7 @@ export default function Register() {
           <form onSubmit={handleSubmit} className="space-y-5" id="register-form">
             {/* Name */}
             <div className="space-y-1.5">
-              <label htmlFor="name" className="block text-sm font-medium text-surface-700 dark:text-slate-300">
+              <label htmlFor="name" className="block text-sm font-medium text-surface-700 dark:text-muted-dark">
                 Full name
               </label>
               <input
@@ -125,13 +125,13 @@ export default function Register() {
                 value={form.name}
                 onChange={handleChange}
                 placeholder="Jane Doe"
-                className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none"
+                className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none dark:border-border-dark dark:bg-input-dark dark:text-white dark:placeholder-placeholder-dark dark:focus:border-primary-dark"
               />
             </div>
 
             {/* Email */}
             <div className="space-y-1.5">
-              <label htmlFor="email" className="block text-sm font-medium text-surface-700 dark:text-slate-300">
+              <label htmlFor="email" className="block text-sm font-medium text-surface-700 dark:text-muted-dark">
                 Email address
               </label>
               <input
@@ -143,13 +143,13 @@ export default function Register() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="you@company.com"
-                className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none"
+                className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none dark:border-border-dark dark:bg-input-dark dark:text-white dark:placeholder-placeholder-dark dark:focus:border-primary-dark"
               />
             </div>
 
             {/* Password */}
             <div className="space-y-1.5">
-              <label htmlFor="password" className="block text-sm font-medium text-surface-700">
+              <label htmlFor="password" className="block text-sm font-medium text-surface-700 dark:text-muted-dark">
                 Password
               </label>
               <div className="relative">
@@ -163,12 +163,12 @@ export default function Register() {
                   value={form.password}
                   onChange={handleChange}
                   placeholder="Min. 6 characters"
-                  className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 pr-12 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 pr-12 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none dark:border-border-dark dark:bg-input-dark dark:text-white dark:placeholder-placeholder-dark dark:focus:border-primary-dark"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600 transition-colors dark:text-slate-500 dark:hover:text-slate-300"
                   aria-label="Toggle password visibility"
                 >
                   {showPassword ? (
@@ -182,7 +182,7 @@ export default function Register() {
 
             {/* Confirm Password */}
             <div className="space-y-1.5">
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-surface-700 dark:text-slate-300">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-surface-700 dark:text-muted-dark">
                 Confirm password
               </label>
               <input
@@ -195,7 +195,7 @@ export default function Register() {
                 value={form.confirmPassword}
                 onChange={handleChange}
                 placeholder="Re-enter your password"
-                className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none"
+                className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none dark:border-border-dark dark:bg-input-dark dark:text-white dark:placeholder-placeholder-dark dark:focus:border-primary-dark"
               />
             </div>
 

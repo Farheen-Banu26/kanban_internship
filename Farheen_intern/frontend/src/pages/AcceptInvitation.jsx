@@ -67,10 +67,10 @@ export default function AcceptInvitation() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-brand-50 px-4 py-10 transition-colors duration-300 dark:from-slate-950 dark:to-slate-900">
-      <div className="w-full max-w-xl rounded-3xl border border-slate-200 bg-white p-8 shadow-2xl shadow-brand-100 dark:border-slate-800 dark:bg-slate-900 dark:shadow-none">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-brand-50 px-4 py-10 transition-colors duration-300 dark:from-bg-dark dark:to-surface-dark">
+      <div className="w-full max-w-xl rounded-3xl border border-slate-200 bg-white p-8 shadow-2xl shadow-brand-100 dark:border-border-dark dark:bg-card-dark dark:shadow-none">
         <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-600 text-white">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-600 text-white dark:bg-primary-dark">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 7h16" />
               <path d="M7 3h10" />
@@ -79,8 +79,8 @@ export default function AcceptInvitation() {
             </svg>
           </div>
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-600">Workspace Invitation</p>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Join your team</h1>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-600 dark:text-blue-400">Workspace Invitation</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-heading-dark">Join your team</h1>
           </div>
         </div>
 
@@ -90,46 +90,46 @@ export default function AcceptInvitation() {
 
         {invitation ? (
           <div className="space-y-5">
-            <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-800/70">
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Workspace</p>
-              <p className="mt-1 text-xl font-semibold text-slate-900 dark:text-slate-100">{invitation.workspace?.name || 'Shared Workspace'}</p>
-              <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{invitation.workspace?.purpose || 'You have been invited to collaborate.'}</p>
+            <div className="rounded-2xl bg-slate-50 p-5 dark:bg-surface-dark/60 dark:border dark:border-border-dark">
+              <p className="text-sm font-medium text-slate-500 dark:text-muted-dark">Workspace</p>
+              <p className="mt-1 text-xl font-semibold text-slate-900 dark:text-heading-dark">{invitation.workspace?.name || 'Shared Workspace'}</p>
+              <p className="mt-2 text-sm text-slate-600 dark:text-body-dark">{invitation.workspace?.purpose || 'You have been invited to collaborate.'}</p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
-                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Invited by</p>
-                <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{invitation.invitedBy?.name || 'A workspace collaborator'}</p>
+              <div className="rounded-2xl border border-slate-200 p-4 dark:border-border-dark dark:bg-card-dark/60">
+                <p className="text-sm font-medium text-slate-500 dark:text-muted-dark">Invited by</p>
+                <p className="mt-1 font-semibold text-slate-900 dark:text-heading-dark">{invitation.invitedBy?.name || 'A workspace collaborator'}</p>
               </div>
-              <div className="rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
-                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Invite code</p>
-                <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{invitation.inviteCode}</p>
+              <div className="rounded-2xl border border-slate-200 p-4 dark:border-border-dark dark:bg-card-dark/60">
+                <p className="text-sm font-medium text-slate-500 dark:text-muted-dark">Invite code</p>
+                <p className="mt-1 font-semibold text-slate-900 dark:text-heading-dark">{invitation.inviteCode}</p>
               </div>
             </div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Signed in as <span className="font-semibold text-slate-700 dark:text-slate-200">{user?.email || 'your account'}</span>.</p>
+            <p className="text-sm text-slate-500 dark:text-muted-dark">Signed in as <span className="font-semibold text-slate-700 dark:text-body-dark">{user?.email || 'your account'}</span>.</p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
                 onClick={handleAccept}
                 disabled={submitting}
-                className="flex-1 rounded-2xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex-1 rounded-2xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-primary-dark dark:hover:bg-blue-600"
               >
                 {submitting ? 'Joining workspace...' : 'Accept Invitation'}
               </button>
               <button
                 type="button"
                 onClick={handleDecline}
-                className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-border-dark dark:bg-surface-dark dark:text-white dark:hover:bg-card-dark"
               >
                 Decline
               </button>
             </div>
           </div>
         ) : !error ? (
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-400">Loading invitation details...</div>
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-sm text-slate-600 dark:border-border-dark dark:bg-surface-dark/60 dark:text-muted-dark">Loading invitation details...</div>
         ) : null}
 
-        <div className="mt-6 text-sm text-slate-500 dark:text-slate-400">
-          Need a different account? <Link to="/login" className="font-semibold text-brand-600">Sign in with another account</Link>
+        <div className="mt-6 text-sm text-slate-500 dark:text-muted-dark">
+          Need a different account? <Link to="/login" className="font-semibold text-brand-600 dark:text-blue-400 dark:hover:text-blue-300">Sign in with another account</Link>
         </div>
       </div>
     </div>

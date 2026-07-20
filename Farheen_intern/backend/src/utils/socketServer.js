@@ -42,6 +42,11 @@ export const initSocketServer = (httpServer) => {
   });
 
   io.on('connection', (socket) => {
+    const userId = socket.data.user?.id;
+    if (userId) {
+      socket.join(userId.toString());
+    }
+
     socket.on('joinWorkspace', (workspaceId) => {
       if (workspaceId) {
         socket.join(workspaceId.toString());
@@ -65,4 +70,9 @@ export const initSocketServer = (httpServer) => {
 export const broadcastWorkspaceEvent = (workspaceId, event, payload) => {
   if (!io || !workspaceId) return;
   io.to(workspaceId.toString()).emit(event, payload);
+};
+
+export const broadcastUserEvent = (userId, event, payload) => {
+  if (!io || !userId) return;
+  io.to(userId.toString()).emit(event, payload);
 };

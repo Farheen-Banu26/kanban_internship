@@ -84,21 +84,21 @@ export default function Profile() {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-surface-900 dark:text-slate-100">My Profile</h1>
-        <p className="mt-1 text-surface-500 dark:text-slate-400">View and update your personal information</p>
+        <h1 className="text-2xl font-extrabold text-surface-900 dark:text-heading-dark">My Profile</h1>
+        <p className="mt-1 text-surface-500 dark:text-muted-dark">View and update your personal information</p>
       </div>
 
       {/* Profile Info Card */}
-      <div className="rounded-2xl border border-surface-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-2xl border border-surface-200 bg-white dark:bg-card-dark p-6 shadow-sm dark:border-border-dark">
         <div className="flex items-center gap-5">
           {/* Avatar */}
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-brand-600 text-white text-3xl font-bold shadow-lg shadow-brand-500/25 shrink-0">
             {initials}
           </div>
           <div>
-            <h2 className="text-xl font-bold text-surface-900 dark:text-slate-100">{profile?.name}</h2>
-            <p className="text-sm text-surface-500 dark:text-slate-400">{profile?.email}</p>
-            <p className="mt-1 text-xs text-surface-400 dark:text-slate-500">
+            <h2 className="text-xl font-bold text-surface-900 dark:text-heading-dark">{profile?.name}</h2>
+            <p className="text-sm text-surface-500 dark:text-muted-dark">{profile?.email}</p>
+            <p className="mt-1 text-xs text-surface-400 dark:text-muted-dark">
               Joined {formatDate(profile?.createdAt)}
             </p>
           </div>
@@ -106,59 +106,59 @@ export default function Profile() {
 
         {/* Stats */}
         <div className="mt-6 grid grid-cols-2 gap-4">
-          <div className="rounded-xl bg-brand-50 border border-brand-100 p-4 text-center">
-            <div className="text-2xl font-extrabold text-brand-700">{profile?.workspaceCount ?? 0}</div>
-            <div className="mt-1 text-xs font-medium text-surface-500 dark:text-slate-400">Workspaces</div>
+          <div className="rounded-xl bg-brand-50 border border-brand-100 p-4 text-center dark:bg-primary-dark/10 dark:border-primary-dark/20">
+            <div className="text-2xl font-extrabold text-brand-700 dark:text-blue-300">{profile?.workspaceCount ?? 0}</div>
+            <div className="mt-1 text-xs font-medium text-surface-500 dark:text-muted-dark">Workspaces</div>
           </div>
-          <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-center">
-            <div className="text-2xl font-extrabold text-emerald-700">{profile?.assignedTaskCount ?? 0}</div>
-            <div className="mt-1 text-xs font-medium text-surface-500 dark:text-slate-400">Assigned Tasks</div>
+          <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-center dark:bg-emerald-900/20 dark:border-emerald-900/30">
+            <div className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-300">{profile?.assignedTaskCount ?? 0}</div>
+            <div className="mt-1 text-xs font-medium text-surface-500 dark:text-muted-dark">Assigned Tasks</div>
           </div>
         </div>
       </div>
 
       {/* Update Form */}
-      <div className="rounded-2xl border border-surface-200 bg-white p-6 shadow-sm space-y-5 dark:border-slate-800 dark:bg-slate-900">
-        <h2 className="text-lg font-bold text-surface-900 dark:text-slate-100">Update Profile</h2>
+      <div className="rounded-2xl border border-surface-200 bg-white dark:bg-card-dark p-6 shadow-sm space-y-5 dark:border-border-dark">
+        <h2 className="text-lg font-bold text-surface-900 dark:text-heading-dark">Update Profile</h2>
 
         <form onSubmit={handleUpdate} className="space-y-4">
           {/* Name */}
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-surface-700 dark:text-slate-300">Name</label>
+            <label className="block text-sm font-medium text-surface-700 dark:text-muted-dark">Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your name"
-              className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none"
+              className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none dark:border-border-dark dark:bg-input-dark dark:text-white dark:placeholder-placeholder-dark dark:focus:border-primary-dark"
             />
           </div>
 
           {/* New Password */}
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-surface-700 dark:text-slate-300">New Password</label>
+            <label className="block text-sm font-medium text-surface-700 dark:text-muted-dark">New Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Leave blank to keep current"
-              className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none"
+              className="w-full rounded-xl border border-surface-300 bg-surface-50 px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:outline-none dark:border-border-dark dark:bg-input-dark dark:text-white dark:placeholder-placeholder-dark dark:focus:border-primary-dark"
             />
           </div>
 
           {/* Confirm Password */}
           {password && (
             <div className="space-y-1.5">
-              <label className="block text-sm font-medium text-surface-700 dark:text-slate-300">Confirm New Password</label>
+              <label className="block text-sm font-medium text-surface-700 dark:text-muted-dark">Confirm New Password</label>
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm new password"
-                className={`w-full rounded-xl border px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:ring-4 focus:outline-none bg-surface-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 ${
+                className={`w-full rounded-xl border px-4 py-3 text-sm text-surface-800 placeholder:text-surface-400 transition-all focus:ring-4 focus:outline-none bg-surface-50 dark:bg-input-dark dark:text-white dark:placeholder-placeholder-dark ${
                   confirmPassword && password !== confirmPassword
-                    ? 'border-red-400 focus:border-red-500 focus:ring-red-500/10'
-                    : 'border-surface-300 focus:border-brand-500 focus:bg-white focus:ring-brand-500/10'
+                    ? 'border-red-400 focus:border-red-500 focus:ring-red-500/10 dark:border-red-700'
+                    : 'border-surface-300 focus:border-brand-500 focus:bg-white focus:ring-brand-500/10 dark:border-border-dark dark:focus:border-primary-dark'
                 }`}
               />
               {confirmPassword && password !== confirmPassword && (
@@ -170,7 +170,7 @@ export default function Profile() {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-brand-500/25 transition-all hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-brand-500/25 transition-all hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed dark:from-primary-dark dark:to-blue-600"
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>

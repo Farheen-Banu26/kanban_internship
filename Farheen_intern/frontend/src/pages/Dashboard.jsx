@@ -18,12 +18,12 @@ const PRIORITY_CONFIG = {
 
 function StatCard({ label, value, icon, accent }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-surface-200 bg-white p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 dark:border-slate-800 dark:bg-slate-900">
+    <div className="group relative overflow-hidden rounded-2xl border border-surface-200 bg-white dark:bg-card-dark p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 dark:border-border-dark">
       <div className={`absolute top-0 right-0 h-24 w-24 rounded-bl-[80px] opacity-10 ${accent}`} />
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium text-surface-500 dark:text-slate-400">{label}</p>
-          <p className="mt-2 text-3xl font-extrabold text-surface-900 dark:text-slate-100">{value}</p>
+          <p className="text-sm font-medium text-surface-500 dark:text-muted-dark">{label}</p>
+          <p className="mt-2 text-3xl font-extrabold text-surface-900 dark:text-heading-dark">{value}</p>
         </div>
         <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${accent} bg-opacity-10`}>
           {icon}
@@ -39,16 +39,16 @@ function DistributionCard({ title, data, config, mode = 'relative' }) {
   const totalCount = items.reduce((sum, [, count]) => sum + count, 0);
 
   return (
-    <div className="rounded-2xl border border-surface-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div className="rounded-2xl border border-surface-200 bg-white dark:bg-card-dark p-6 shadow-sm dark:border-border-dark">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-surface-900 dark:text-slate-100">{title}</h3>
-        <span className="rounded-full bg-surface-100 px-2.5 py-0.5 text-xs font-semibold text-surface-600 dark:bg-slate-800 dark:text-slate-300">
+        <h3 className="text-sm font-semibold text-surface-900 dark:text-heading-dark">{title}</h3>
+        <span className="rounded-full bg-surface-100 px-2.5 py-0.5 text-xs font-semibold text-surface-600 dark:bg-surface-dark dark:text-muted-dark">
           {totalCount}
         </span>
       </div>
 
       {items.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-surface-200 px-4 py-6 text-center text-sm text-surface-400 dark:border-slate-700 dark:text-slate-400">
+        <div className="rounded-xl border border-dashed border-surface-200 px-4 py-6 text-center text-sm text-surface-400 dark:border-border-dark dark:text-muted-dark">
           No activity yet
         </div>
       ) : (
@@ -62,12 +62,12 @@ function DistributionCard({ title, data, config, mode = 'relative' }) {
             return (
               <div key={key}>
                 <div className="mb-1.5 flex items-center justify-between">
-                  <span className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-semibold ${cfg.text} ${cfg.bg}`}>
+                  <span className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-semibold ${cfg.text} ${cfg.bg} ${String(cfg.bg ?? '').includes('bg-surface-50') ? 'dark:bg-surface-dark dark:text-heading-dark' : ''}`}>
                     {cfg.label}
                   </span>
-                  <span className="text-sm font-bold text-surface-700">{count}</span>
+                  <span className="text-sm font-bold text-surface-700 dark:text-heading-dark">{count}</span>
                 </div>
-                <div className="h-2 overflow-hidden rounded-full bg-surface-100">
+                <div className="h-2 overflow-hidden rounded-full bg-surface-100 dark:bg-surface-dark">
                   <div
                     className={`h-full rounded-full ${cfg.color} transition-all duration-500`}
                     style={{ width }}
@@ -84,33 +84,38 @@ function DistributionCard({ title, data, config, mode = 'relative' }) {
 
 function TaskTable({ title, tasks, showAssignee = false }) {
   return (
-    <div className="rounded-2xl border border-surface-200 bg-white shadow-sm overflow-hidden dark:border-slate-800 dark:bg-slate-900">
-      <div className="flex items-center justify-between px-6 py-4 border-b border-surface-100">
-        <h3 className="text-sm font-semibold text-surface-900 dark:text-slate-100">{title}</h3>
-        <span className="rounded-full bg-surface-100 px-2.5 py-0.5 text-xs font-bold text-surface-600 dark:bg-slate-800 dark:text-slate-300">
+    <div className="rounded-2xl border border-surface-200 bg-white dark:bg-card-dark shadow-sm overflow-hidden dark:border-border-dark">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-surface-100 dark:border-border-dark">
+        <h3 className="text-sm font-semibold text-surface-900 dark:text-heading-dark">{title}</h3>
+        <span className="rounded-full bg-surface-100 px-2.5 py-0.5 text-xs font-bold text-surface-600 dark:bg-surface-dark dark:text-muted-dark">
           {tasks.length}
         </span>
       </div>
 
       {tasks.length === 0 ? (
-        <div className="px-6 py-10 text-center text-sm text-surface-400 dark:text-slate-400">No tasks found</div>
+        <div className="px-6 py-10 text-center text-sm text-surface-400 dark:text-muted-dark">No tasks found</div>
       ) : (
-        <div className="divide-y divide-surface-100">
-          {tasks.map((task) => {
+        <div className="divide-y divide-surface-100 dark:divide-border-dark">
+          {tasks.map((task, index) => {
             const p = PRIORITY_CONFIG[task.priority] || { color: 'bg-surface-300', label: task.priority };
             const s = STATUS_CONFIG[task.status] || { color: 'bg-surface-300', label: task.status };
 
             return (
-              <div key={task.id} className="flex items-center gap-4 px-6 py-3.5 transition-colors hover:bg-surface-50 dark:hover:bg-slate-800/70">
+              <div
+                key={task.id}
+                className={`flex items-center gap-4 px-6 py-3.5 transition-colors ${
+                  index % 2 === 0 ? 'bg-white dark:bg-card-dark' : 'bg-surface-50/50 dark:bg-surface-dark/40'
+                } hover:bg-surface-50 dark:hover:bg-surface-dark/80`}
+              >
                 {/* Priority dot */}
                 <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${p.color}`} />
 
                 {/* Title */}
-                <span className="flex-1 truncate text-sm font-medium text-surface-800 dark:text-slate-200">{task.title}</span>
+                <span className="flex-1 truncate text-sm font-medium text-surface-800 dark:text-body-dark">{task.title}</span>
 
                 {/* Assignee (for overdue) */}
                 {showAssignee && task.assignee && (
-                  <span className="hidden sm:inline-block rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">
+                  <span className="hidden sm:inline-block rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700 dark:bg-slate-800 dark:text-slate-200">
                     {task.assignee.name}
                   </span>
                 )}
@@ -118,12 +123,12 @@ function TaskTable({ title, tasks, showAssignee = false }) {
                 {/* Status badge */}
                 <span className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-semibold ${
                   task.status === 'done'
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300'
                     : task.status === 'in_progress'
-                      ? 'bg-blue-50 text-blue-700'
+                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300'
                       : task.status === 'review'
-                        ? 'bg-amber-50 text-amber-700'
-                        : 'bg-surface-100 text-surface-600'
+                        ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300'
+                        : 'bg-surface-100 text-surface-600 dark:bg-slate-800 dark:text-slate-350'
                 }`}>
                   <span className={`h-1.5 w-1.5 rounded-full ${s.color}`} />
                   {s.label}
@@ -131,7 +136,7 @@ function TaskTable({ title, tasks, showAssignee = false }) {
 
                 {/* Due date */}
                 {task.dueDate && (
-                  <span className="hidden md:inline text-xs text-surface-400 whitespace-nowrap dark:text-slate-400">
+                  <span className="hidden md:inline text-xs text-surface-400 whitespace-nowrap dark:text-muted-dark">
                     {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </span>
                 )}
@@ -141,8 +146,7 @@ function TaskTable({ title, tasks, showAssignee = false }) {
         </div>
       )}
     </div>
-  );
-}
+  );}
 
 export default function Dashboard() {
   const [workspaces, setWorkspaces] = useState([]);
@@ -203,12 +207,12 @@ export default function Dashboard() {
 
   if (workspaces.length === 0) {
     return (
-      <div className="rounded-2xl border-2 border-dashed border-surface-200 p-12 text-center max-w-lg mx-auto mt-10 dark:border-slate-800 dark:bg-slate-900/70">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 mb-4">
+      <div className="rounded-2xl border-2 border-dashed border-surface-200 p-12 text-center max-w-lg mx-auto mt-10 dark:border-border-dark dark:bg-card-dark/70">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 mb-4 dark:bg-slate-800 dark:text-white">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9" rx="1" /><rect x="14" y="3" width="7" height="5" rx="1" /><rect x="14" y="12" width="7" height="9" rx="1" /><rect x="3" y="16" width="7" height="5" rx="1" /></svg>
         </div>
-        <h3 className="text-lg font-bold text-surface-900 dark:text-slate-100">No data available</h3>
-        <p className="mt-1 text-sm text-surface-500 dark:text-slate-400">You must belong to at least one workspace to view dashboard statistics.</p>
+        <h3 className="text-lg font-bold text-surface-900 dark:text-heading-dark">No data available</h3>
+        <p className="mt-1 text-sm text-surface-500 dark:text-muted-dark">You must belong to at least one workspace to view dashboard statistics.</p>
         <div className="mt-6">
           <Link
             to="/workspaces"
@@ -226,20 +230,20 @@ export default function Dashboard() {
       {/* ── Page header ──────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-surface-900 dark:text-slate-100">Dashboard</h1>
-          <p className="mt-1 text-surface-500 dark:text-slate-400">Overview of your workspace activity</p>
+          <h1 className="text-2xl font-extrabold text-surface-900 dark:text-heading-dark">Dashboard</h1>
+          <p className="mt-1 text-surface-500 dark:text-muted-dark">Overview of your workspace activity</p>
         </div>
 
         {/* Workspace select */}
         <div className="flex items-center gap-2">
-          <label htmlFor="workspace-select" className="text-sm font-medium text-surface-600 whitespace-nowrap dark:text-slate-300">
+          <label htmlFor="workspace-select" className="text-sm font-medium text-surface-600 whitespace-nowrap dark:text-muted-dark">
             Workspace:
           </label>
           <select
             id="workspace-select"
             value={selectedWsId}
             onChange={(e) => setSelectedWsId(e.target.value)}
-            className="rounded-xl border border-surface-300 bg-white px-3.5 py-2 text-sm text-surface-700 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 focus:outline-none transition-all dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+            className="rounded-xl border border-surface-300 bg-white px-3.5 py-2 text-sm text-surface-700 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 focus:outline-none transition-all dark:border-border-dark dark:bg-input-dark dark:text-body-dark dark:focus:border-primary-dark"
           >
             {workspaces.map((ws) => (
               <option key={ws.id} value={ws.id}>

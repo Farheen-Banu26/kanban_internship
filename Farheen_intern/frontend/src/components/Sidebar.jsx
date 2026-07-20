@@ -57,23 +57,23 @@ export default function Sidebar() {
 
   const linkClasses = (path) => {
     const isActive = location.pathname === path || location.pathname.startsWith(path + '/');
-    return `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+    return `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.01] ${
       isActive
-        ? 'bg-brand-50 text-brand-700 shadow-sm shadow-brand-500/10'
-        : 'text-surface-500 hover:bg-surface-100 hover:text-surface-700'
+        ? 'bg-brand-50 text-brand-700 shadow-sm shadow-brand-500/10 dark:bg-gradient-to-r dark:from-primary-dark dark:to-blue-500 dark:text-white dark:shadow-md dark:shadow-blue-500/20'
+        : 'text-surface-500 hover:bg-surface-100 hover:text-surface-700 dark:text-muted-dark dark:hover:bg-card-dark dark:hover:text-heading-dark'
     }`;
   };
 
   const iconClasses = (path) => {
     const isActive = location.pathname === path || location.pathname.startsWith(path + '/');
-    return isActive ? 'text-brand-500' : 'text-surface-400 group-hover:text-surface-600';
+    return isActive ? 'text-brand-500 dark:text-white' : 'text-surface-400 group-hover:text-surface-600 dark:text-slate-400 dark:group-hover:text-heading-dark';
   };
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 border-r border-surface-200 bg-white p-4 shrink-0 transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900">
+    <aside className="hidden lg:flex flex-col w-64 border-r border-surface-200 bg-white p-4 shrink-0 transition-colors duration-300 dark:border-border-dark dark:bg-surface-dark">
       {/* ── Main navigation ──────────────────────────── */}
       <nav className="flex flex-col gap-1 flex-1 overflow-y-auto">
-        <p className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-surface-400 shrink-0 dark:text-slate-500">
+        <p className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-surface-400 shrink-0 dark:text-muted-dark">
           Menu
         </p>
         {MENU_ITEMS.map(({ to, label, icon }) => (
@@ -84,7 +84,7 @@ export default function Sidebar() {
         ))}
 
         {/* ── Workspace shortcuts ──────────────────── */}
-        <p className="px-3 mt-6 mb-2 text-xs font-semibold uppercase tracking-wider text-surface-400 shrink-0 dark:text-slate-500">
+        <p className="px-3 mt-6 mb-2 text-xs font-semibold uppercase tracking-wider text-surface-400 shrink-0 dark:text-muted-dark">
           My Workspaces
         </p>
         <div className="space-y-1">
@@ -96,16 +96,16 @@ export default function Sidebar() {
               <Link
                 key={ws.id}
                 to={path}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all cursor-pointer ${
+                className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all cursor-pointer hover:-translate-y-0.5 hover:scale-[1.01] ${
                   isActive
-                    ? 'bg-brand-50 text-brand-700 shadow-sm shadow-brand-500/10'
-                    : 'text-surface-500 hover:bg-surface-100 hover:text-surface-700'
+                    ? 'bg-brand-50 text-brand-700 shadow-sm shadow-brand-500/10 dark:bg-gradient-to-r dark:from-primary-dark dark:to-blue-500 dark:text-white dark:shadow-md dark:shadow-blue-500/20'
+                    : 'text-surface-500 hover:bg-surface-100 hover:text-surface-700 dark:text-muted-dark dark:hover:bg-card-dark dark:hover:text-heading-dark'
                 }`}
               >
                 <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold transition-all ${
                   isActive
-                    ? 'bg-brand-600 text-white shadow-sm shadow-brand-500/25'
-                    : 'bg-gradient-to-br from-brand-100 to-brand-200 text-brand-600'
+                    ? 'bg-brand-600 text-white shadow-sm shadow-brand-500/25 dark:bg-white/20 dark:text-white'
+                    : 'bg-gradient-to-br from-brand-100 to-brand-200 text-brand-600 dark:from-slate-800 dark:to-slate-700 dark:text-slate-200'
                 }`}>
                   {initials}
                 </span>
@@ -114,13 +114,13 @@ export default function Sidebar() {
             );
           })}
           {workspaces.length === 0 && (
-            <p className="px-3 py-2 text-xs text-surface-450 italic dark:text-slate-500">No workspaces</p>
+            <p className="px-3 py-2 text-xs text-surface-450 italic dark:text-muted-dark">No workspaces</p>
           )}
         </div>
       </nav>
 
       {/* ── Bottom actions ────────────────────────────── */}
-      <div className="border-t border-surface-200 pt-3 mt-3 flex flex-col gap-1 shrink-0 dark:border-slate-800">
+      <div className="border-t border-surface-200 pt-3 mt-3 flex flex-col gap-1 shrink-0 dark:border-border-dark">
         {BOTTOM_ITEMS.map(({ to, label, icon }) => (
           <NavLink key={label} to={to} className={linkClasses(to)}>
             <span className={iconClasses(to)}>{icon}</span>

@@ -1,0 +1,51 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: kanban_mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_DATABASE: kanban
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: kanban_backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      MONGODB_URI: "mongodb://mongodb:27017/kanban"
+    ports:
+      - '5000:5000'
+    depends_on:
+      - mongodb
+    volumes:
+      - backend_uploads:/app/uploads
+    networks:
+      - kanban_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kanban_frontend
+    restart: unless-stopped
+    ports:
+      - '5173:80'
+    depends_on:
+      - backend
+    networks:
+      - kanban_network
+
+volumes:
+  mongodb_data:
+  backend_uploads:
+
+networks:
+  kanban_network:
+    driver: bridge

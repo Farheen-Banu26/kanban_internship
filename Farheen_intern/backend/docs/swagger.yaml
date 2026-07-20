@@ -1,0 +1,199 @@
+openapi: 3.0.3
+info:
+  title: Kanban Board API
+  version: 1.0.0
+  description: API for authentication, workspaces, tasks, and dashboard metrics.
+servers:
+  - url: http://localhost:5000/api
+    description: Local development
+  - url: https://your-render-app.onrender.com/api
+    description: Production
+security:
+  - bearerAuth: []
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: API is reachable
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 6
+      responses:
+        '201':
+          description: User registered
+  /auth/login:
+    post:
+      summary: Log in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: JWT returned
+  /workspaces:
+    get:
+      summary: List workspaces for the current user
+      responses:
+        '200':
+          description: Workspace list
+    post:
+      summary: Create a workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Workspace created
+  /workspaces/join:
+    post:
+      summary: Join a workspace via invite code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [inviteCode]
+              properties:
+                inviteCode:
+                  type: string
+      responses:
+        '200':
+          description: Joined workspace
+  /tasks:
+    get:
+      summary: Get tasks for a workspace
+      parameters:
+        - in: query
+          name: workspaceId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task list
+    post:
+      summary: Create a task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, workspace]
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: string
+                  enum: [todo, in_progress, review, done]
+                priority:
+                  type: string
+                  enum: [low, medium, high, urgent]
+                dueDate:
+                  type: string
+                  format: date
+                labels:
+                  type: array
+                  items:
+                    type: string
+                assignee:
+                  type: string
+                workspace:
+                  type: string
+      responses:
+        '201':
+          description: Task created
+  /tasks/{id}:
+    put:
+      summary: Update a task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                status:
+                  type: string
+                  enum: [todo, in_progress, review, done]
+                priority:
+                  type: string
+                  enum: [low, medium, high, urgent]
+      responses:
+        '200':
+          description: Task updated
+    delete:
+      summary: Delete a task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task deleted
+  /dashboard:
+    get:
+      summary: Retrieve dashboard metrics for a workspace
+      parameters:
+        - in: query
+          name: workspaceId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dashboard payload
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

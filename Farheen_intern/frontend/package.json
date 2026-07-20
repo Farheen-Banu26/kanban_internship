@@ -1,0 +1,42 @@
+{
+  "name": "kanban-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run",
+    "test:ui": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "axios": "^1.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.57.0",
+    "react-hot-toast": "^2.6.0",
+    "react-router-dom": "^7.6.2",
+    "socket.io-client": "^4.8.1",
+    "uuid": "^14.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.8",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^6.0.3",
+    "@testing-library/react": "^15.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/user-event": "^14.6.0",
+    "jsdom": "^26.1.0",
+    "vitest": "^4.1.10",
+    "oxlint": "^1.71.0",
+    "tailwindcss": "^4.1.8",
+    "vite": "^8.1.1"
+  }
+}

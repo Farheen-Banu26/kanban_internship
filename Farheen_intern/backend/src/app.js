@@ -1,0 +1,38 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
+import { env } from './config/env.js';
+import routes from './routes/index.js';
+import { notFound } from './middleware/notFound.js';
+import { errorHandler } from './middleware/errorHandler.js';
+
+const app = express();
+
+app.use(morgan(env.nodeEnv === 'development' ? 'dev' : 'combined'));
+app.use(helmet());
+const allowedOrigins = [env.clientUrl, 'http://localhost:5173', 'http://127.0.0.1:5173'].filter(Boolean);
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: { success: false, message: 'Too many requests, please try again later' },
+  })
+);
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/api', routes);
+
+app.use(notFound);
+app.use(errorHandler);
+
+export default app;

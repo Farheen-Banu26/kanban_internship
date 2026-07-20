@@ -1,0 +1,39 @@
+erDiagram
+    USER ||--o{ WORKSPACE_MEMBER : belongs_to
+    USER ||--o{ TASK : created_by
+    USER ||--o{ TASK : assignee
+    WORKSPACE ||--o{ WORKSPACE_MEMBER : has
+    WORKSPACE ||--o{ TASK : contains
+
+    USER {
+      string id PK
+      string name
+      string email
+      string passwordHash
+    }
+
+    WORKSPACE {
+      string id PK
+      string name
+      string inviteCode
+    }
+
+    WORKSPACE_MEMBER {
+      string id PK
+      string workspaceId FK
+      string userId FK
+      string role
+    }
+
+    TASK {
+      string id PK
+      string title
+      string description
+      string status
+      string priority
+      date dueDate
+      string[] labels
+      string workspaceId FK
+      string assigneeId FK
+      string createdById FK
+    }

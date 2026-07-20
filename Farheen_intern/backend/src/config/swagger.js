@@ -15,12 +15,18 @@ const swaggerDefinition = {
       url: 'https://opensource.org/licenses/MIT',
     },
   },
-  servers: [
-    {
-      url: 'http://localhost:5000',
-      description: 'Local development server',
-    },
-  ],
+ servers: [
+  {
+    url:
+      process.env.NODE_ENV === 'production'
+        ? 'https://kanban-internship-8vjw.onrender.com'
+        : 'http://localhost:5000',
+    description:
+      process.env.NODE_ENV === 'production'
+        ? 'Production Server'
+        : 'Local Development Server',
+  },
+],
   components: {
     securitySchemes: {
       bearerAuth: {

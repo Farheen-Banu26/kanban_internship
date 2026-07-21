@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "firebase": "^12.16.0",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"
   }

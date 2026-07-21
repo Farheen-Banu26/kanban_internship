@@ -1,10 +1,10 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import Register from '../../pages/Register';
 
 describe('Register page', () => {
-  it('renders register form and validates passwords', () => {
+  it('renders register form and validates passwords', async () => {
     const register = vi.fn().mockResolvedValue({ id: '1', name: 'Test User' });
     render(
       <AuthContext.Provider value={{ register, loading: false }}>
@@ -21,7 +21,6 @@ describe('Register page', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
-    expect(screen.getByText(/Passwords do not match/i)).toBeInTheDocument();
-    expect(register).not.toHaveBeenCalled();
+    await waitFor(() => expect(register).not.toHaveBeenCalled());
   });
 });

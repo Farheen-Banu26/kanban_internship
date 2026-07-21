@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { env } from './config/env.js';
 import routes from './routes/index.js';
 import swaggerUi from 'swagger-ui-express';
@@ -13,30 +14,43 @@ import { notFound } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
-app.get("/test", (req, res) => {
+
+// Test Route
+app.get('/test', (req, res) => {
   res.json({
     success: true,
-    message: "Latest app.js is running"
+    message: 'Latest app.js is running',
   });
 });
 
-// Explicit GET to ensure some proxies/clients reaching '/api-docs' (without trailing slash)
-// receive the UI HTML directly instead of relying on a redirect.
-app.get('/api-docs', (_req, res) => {
-  try {
-    const html = swaggerUi.generateHTML(swaggerSpec, { explorer: true });
-    res.setHeader('Content-Type', 'text/html');
-    return res.send(html);
-  } catch (err) {
-    return res.status(500).json({ success: false, message: 'Failed to render API docs' });
-  }
+// Swagger UI
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+    customSiteTitle: 'TaskFlow API Documentation',
+  })
+);
+
+// Swagger JSON
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
 });
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
-
+// Logger
 app.use(morgan(env.nodeEnv === 'development' ? 'dev' : 'combined'));
+
+// Security
 app.use(helmet());
-const allowedOrigins = [env.clientUrl, 'http://localhost:5173', 'http://127.0.0.1:5173'].filter(Boolean);
+
+// CORS
+const allowedOrigins = [
+  env.clientUrl,
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+].filter(Boolean);
 
 app.use(
   cors({
@@ -44,23 +58,34 @@ app.use(
     credentials: true,
   })
 );
+
+// Rate Limiter
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
-    message: { success: false, message: 'Too many requests, please try again later' },
+    message: {
+      success: false,
+      message: 'Too many requests, please try again later',
+    },
   })
 );
+
+// Body Parser
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Static Uploads
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const uploadsDir = path.join(__dirname, '../../uploads');
 
-app.use('/api', routes);
 app.use('/uploads', express.static(uploadsDir));
 
+// API Routes
+app.use('/api', routes);
+
+// Error Handlers
 app.use(notFound);
 app.use(errorHandler);
 
